@@ -5,10 +5,6 @@ const { people, courses, trainingSessions } = require('./training-data.js');
 const getIds = obj => [ obj.externalId, obj._id ];
 
 const findId = (idToFind, ids) => ids[idToFind];
-  // const found = R.find(data => data.id === idToFind)(array);
-
-  return found._id;
-};
 
 const updateData = collection => {
   const newCollection = R.map(doc => {
@@ -24,7 +20,7 @@ const createAllCollections = db => {
   return Promise.all([peoplePromise, coursesPromise])
     .then(([peoplePromise, coursesPromise]) => {
       const userIds = R.fromPairs(R.map(getIds)(peoplePromise.ops));
-      const coursesIds = R.map(getIds)(coursesPromise.ops);
+      const coursesIds = R.fromPairs(R.map(getIds)(coursesPromise.ops));
       const sessionCollection = R.map(item => {
         item.userId = findId(item.userId, userIds);
         item.courseId = findId(item.courseId, coursesIds);

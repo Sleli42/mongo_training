@@ -35,3 +35,56 @@ const data = {
 };
 
 module.exports = data;
+/*
+people receiv:  { '1':
+   { _id: 58ac576862367931c3d1ac90,
+     externalId: 1,
+     firstName: 'Sofiane',
+     lastName: 'Khatir' },
+  '2':
+   { _id: 58ac576862367931c3d1ac91,
+     externalId: 2,
+     firstName: 'Raphael',
+     lastName: 'Le Minor' },
+  '3':
+   { _id: 58ac576862367931c3d1ac92,
+     externalId: 3,
+     firstName: 'Lucas',
+     lastName: 'Baujard' },
+  '4':
+   { _id: 58ac576862367931c3d1ac93,
+     externalId: 4,
+     firstName: 'Matthias',
+     lastName: 'Leconte' } }
+
+courses receiv:  { '1':
+   { _id: 58ac576862367931c3d1ac94,
+     externalId: 1,
+     name: 'JavaScript Road Trip Part 1',
+     skillPoints: [ [Object] ] },
+  '2':
+   { _id: 58ac576862367931c3d1ac95,
+     externalId: 2,
+     name: 'JavaScript Road Trip Part 2',
+     skillPoints: [ [Object], [Object] ] },
+  '3':
+   { _id: 58ac576862367931c3d1ac96,
+     externalId: 3,
+     name: 'React',
+     skillPoints: [ [Object], [Object], [Object] ] },
+  '4':
+   { _id: 58ac576862367931c3d1ac97,
+     externalId: 4,
+     name: 'Redux',
+     skillPoints: [ [Object], [Object], [Object] ] },
+  '5':
+   { _id: 58ac576862367931c3d1ac98,
+     externalId: 5,
+     name: 'Redux',
+     skillPoints: [ [Object], [Object], [Object], [Object] ] },
+  '6':
+   { _id: 58ac576862367931c3d1ac99,
+     externalId: 6,
+     name: 'Functionnal Programming',
+     skillPoints: [ [Object], [Object] ] } }
+  */
