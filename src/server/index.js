@@ -1,73 +1,44 @@
-var MongoClient = require('mongodb').MongoClient;
-var fs = require('fs');
-var R = require('ramda');
-var file = require('./training-data.js');
+const MongoClient = require('mongodb').MongoClient;
+const R = require('ramda');
+const { people, courses, trainingSessions } = require('./training-data.js');
+const createAllCollections = require('./load');
 
 const url = 'mongodb://localhost:27017/mongoTraining';
 
 MongoClient.connect(url)
-  .then(db => createAllCollections(db))
+  .then(createAllCollections)
   .then(db => {
-    // extractData(db);
+    // console.log('db: ', db);
+    extractData(db);
     db.close();
   })
   .catch(err => console.error('err -> ', err));
 
+/*
+  ['a','b','c'].reduce(function(result, item) {
+    result[item] = item; //a, b, c
+    return result;
+  }, {})
+*/
+/*
+      Extract data from mongo and rebuild 3 objects:
+
+  `people`: JS object where keys are externalIds and values documents from people
+  `courses`: JS object where keys are externalIds and values documents from courses
+    collection.
+  `sessions`: JS ARRAY made of objects { user: people[userId], course: courses[courseId] }
+
+  If 2 sessions are about the same user or course they should share the same object: Do not
+  duplicate in memory objects with same _id !!!!
+
+*/
+
 //________________________________ Extract data from collections _________________
 const extractData = (db) => {
   db.collection('people').find().toArray()
-    .then(R.reduce((acc, value) => ({ ...acc, [value.externalId]: value })))
-    .then(res => console.log('res:', res))
-    .catch(err => console.error('err: ', err))
-}
-
-
-//________________________________ Create all collections et load all documents _________________
-const createAllCollections = db => {
-  const peoplePromise = createCollection(db, 'people').then(insertDocsInPeopleCollection(db));
-  const coursesPromise = createCollection(db, 'courses').then(insertDocsInCoursesCollection(db));
-  Promise.all([peoplePromise, coursesPromise])
-    .then(([peoplePromise, coursesPromise]) => {
-      console.log('peoplePromise: ', peoplePromise);
-      console.log('coursesPromise: ', coursesPromise.s.db);
+    .then(list => {
+        return R.reduce((accu, value) => ({ ...accu, [value.externalId]: value }), {})(list)
     })
-    .catch(console.error)
-  // createCollection(db, 'trainingSessions');
-  // insertDocsInSessionsCollection(db);
-  return db;
-};
-
-const updateData = collection => {
-  const newCollection = R.map(doc => {
-    const setExternalId = { externalId: doc.id, ...doc };
-    return R.omit('id')(setExternalId);
-  })(collection)
-  return newCollection;
-};
-
-const createCollection = (db, collectionName) => {
-  return db.createCollection(collectionName)
-    .then(console.log("Collection created"))
-    .catch(err => console.error('[create collection] err: ', err));
-};
-
-const insertDocsInPeopleCollection = (db) => {
-  const collection = db.collection('people');
-  return collection.insertMany(updateData(file.people))
-    .then(() => console.log('Documents added to people collection'))
-    .catch(err => console.error('[insert docs(people)] err: ', err));
-};
-
-const insertDocsInCoursesCollection = (db) => {
-  const collection = db.collection('courses');
-  return collection.insertMany(updateData(file.courses))
-    .then(() => console.log('Documents added to courses collection'))
-    .catch(err => console.error('[insert docs(courses)] err: ', err));
-};
-//
-// const insertDocsInSessionsCollection = (db) => {
-//   const collection = db.collection('trainingSessions');
-//   collection.insertMany(file.trainingSessions)
-//     .then(() => console.log('Documents added to trainingSessions collection'))
-//     .catch(err => console.error('[insert docs(sessions)] err: ', err));
-// };
+    .then(console.log)
+    // .then(R.reduce((acc, value) => ({ [value.externalId]: value }) ))
+}
