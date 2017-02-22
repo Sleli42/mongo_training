@@ -31,13 +31,13 @@ const extractData = (db) => {
 
   const sessionsObj = db.collection('trainingSessions').find().toArray();
 
-  Promise.all([peopleByObjId, coursesByObjId])
-    .then(([peopleByObjId, coursesByObjId]) => {
-      sessionsObj.then(R.map(({ userId, courseId }) => ({
-        user: peopleByObjId[userId],
-        courses: coursesByObjId[courseId]
+  return Promise.all([peopleByObjId, coursesByObjId])
+    .then(([people, courses]) => {
+      db.close();
+      return sessionsObj.then(R.map(({ userId, courseId }) => ({
+        user: people[userId],
+        courses: courses[courseId],
       })))
-      .then(console.log)
     })
 }
 
